@@ -35,15 +35,25 @@ $("#submit").on("click", function(event) {
     $("input").val("");
 });
 
+$(document).on("click", "#remove", function(event) {
+    event.preventDefault();
+    var parentId = $(this).parent().attr("id");
+    database.ref(parentId).remove();
+    $(this).parent().remove();
+});
+
 database.ref().on("child_added", function(snapshot) {
     var newRow = $("<tr>").append(
         $("<td>").text(snapshot.val().name),
         $("<td>").text(snapshot.val().destination),
         $("<td>").text(snapshot.val().frequency),
         $("<td>").text(snapshot.val().nextArrival),
-        $("<td>").text(snapshot.val().minutesTil)
+        $("<td>").text(snapshot.val().minutesTil),
+        $("<button id='remove'>Remove</button>")
     );
+    newRow.attr("id", snapshot.key);
     $("tbody").append(newRow);
+    console.log(snapshot.key);
 }, function(errorObj) {
     console.log(errorObj.code);
 });
